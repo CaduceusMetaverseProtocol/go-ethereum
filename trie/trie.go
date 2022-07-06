@@ -168,6 +168,10 @@ func (t *Trie) TryGetNode(path []byte) ([]byte, int, error) {
 }
 
 func (t *Trie) tryGetNode(origNode node, path []byte, pos int) (item node, newnode node, resolved int, err error) {
+	// If non-existent path requested, abort
+	if origNode == nil {
+		return nil, nil, 0, nil
+	}
 	// If we reached the requested path, return the current node
 	if pos >= len(path) {
 		// Don't return collapsed hash nodes though
