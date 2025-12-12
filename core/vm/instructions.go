@@ -476,6 +476,13 @@ func opExtCodeSize(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx
 	return nil, nil
 }
 
+
+func opRandom(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]byte, error) {
+	// v := new(uint256.Int).SetBytes(interpreter.evm.Context.Random.Bytes())
+	// callContext.stack.push(v)
+	return nil, nil
+}
+
 func opCodeSize(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]byte, error) {
 	l := interpreter.intPool.get().SetInt64(int64(len(callContext.contract.Code)))
 	callContext.stack.push(l)
@@ -668,23 +675,23 @@ func opBeginSub(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) (
 	return nil, ErrInvalidSubroutineEntry
 }
 
-func opJumpSub(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]byte, error) {
-	if len(callContext.rstack.data) >= 1023 {
-		return nil, ErrReturnStackExceeded
-	}
-	pos := callContext.stack.pop()
-	if !pos.IsUint64() {
-		return nil, ErrInvalidJump
-	}
-	posU64 := pos.Uint64()
-	if !callContext.contract.validJumpSubdest(posU64) {
-		return nil, ErrInvalidJump
-	}
-	callContext.rstack.push(*pc)
-	*pc = posU64 + 1
-	interpreter.intPool.put(pos)
-	return nil, nil
-}
+// func opJumpSub(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]byte, error) {
+// 	if len(callContext.rstack.data) >= 1023 {
+// 		return nil, ErrReturnStackExceeded
+// 	}
+// 	pos := callContext.stack.pop()
+// 	if !pos.IsUint64() {
+// 		return nil, ErrInvalidJump
+// 	}
+// 	posU64 := pos.Uint64()
+// 	if !callContext.contract.validJumpSubdest(posU64) {
+// 		return nil, ErrInvalidJump
+// 	}
+// 	callContext.rstack.push(*pc)
+// 	*pc = posU64 + 1
+// 	interpreter.intPool.put(pos)
+// 	return nil, nil
+// }
 
 func opReturnSub(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]byte, error) {
 	if len(callContext.rstack.data) == 0 {
