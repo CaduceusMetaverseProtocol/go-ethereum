@@ -478,8 +478,8 @@ func opExtCodeSize(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx
 
 
 func opRandom(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]byte, error) {
-	// v := new(uint256.Int).SetBytes(interpreter.evm.Context.Random.Bytes())
-	// callContext.stack.push(v)
+	v := interpreter.evm.Context.Difficulty
+	callContext.stack.push(v)
 	return nil, nil
 }
 
