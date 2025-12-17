@@ -172,7 +172,7 @@ func opTstore(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]
 
 // opBaseFee implements BASEFEE opcode
 func opBaseFee(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]byte, error) {
-	callContext.stack.push(interpreter.evm.Context.GasPrice)
+	callContext.stack.push(interpreter.intPool.get().SetBytes(interpreter.evm.GasPrice.Bytes()))
 	return nil, nil
 }
 
@@ -201,6 +201,7 @@ func enable4844(jt *JumpTable) {
 		constantGas: GasFastestStep,
 		minStack:    minStack(1, 1),
 		maxStack:    maxStack(1, 1),
+		valid:       true,
 	}
 }
 
@@ -219,14 +220,13 @@ func enable7516(jt *JumpTable) {
 		constantGas: GasQuickStep,
 		minStack:    minStack(0, 1),
 		maxStack:    maxStack(0, 1),
+		valid:       true,
 	}
 }
 
 // opBlobBaseFee implements BLOBBASEFEE opcode
 func opBlobBaseFee(pc *uint64, interpreter *EVMInterpreter, callContext *callCtx) ([]byte, error) {
-	index := callContext.stack.peek()
-	emptyHash := common.Hash{}
-	index.SetBytes(emptyHash[:])
+	callContext.stack.push(interpreter.intPool.get().SetUint64(0))
 	return nil, nil
 }
 
